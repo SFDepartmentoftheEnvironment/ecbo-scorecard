@@ -5,11 +5,11 @@ import {Dashboard} from './js/dashboard.js'
 import legend from './shared-js/legend.js'
 import './css/dashboard.css'
 
-import logo from './assets/sf_logo_white.png'
-var sfLogo = new Image()
-sfLogo.src = logo
-sfLogo.alt = 'SF Dept of Environment'
-document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
+// import logo from './assets/sf_logo_white.png'
+// var sfLogo = new Image()
+// sfLogo.src = logo
+// sfLogo.alt = 'SF Dept of Environment'
+// document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
 
 /* page elements */
 var estarHistogramElement = d3.select('#energy-star-score-histogram')
