@@ -13,7 +13,7 @@ import './css/dashboard.css'
 
 /* page elements */
 var estarHistogramElement = d3.select('#energy-star-score-histogram')
-var estarWidth = 500
+var estarWidth = 400
 var estarHistogram = histogramChart()
   .width(estarWidth)
   .height(200)
