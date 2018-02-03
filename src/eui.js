@@ -33,7 +33,7 @@ Dashboard.handlePropertyTypeResponse = function (rows) {
 
   Dashboard.color.site_eui_kbtu_ft2.domain(arrayQuartiles(euiVals))
   /* draw stacked bar for energy use intensity */
-  var euiWidth = 650
+  var euiWidth = 400
   var euiChart = quartilesChart()
     .width(euiWidth)
     .height(150)

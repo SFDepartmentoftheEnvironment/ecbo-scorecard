@@ -18,7 +18,7 @@ document.getElementById('ghg-icon').appendChild(ghgLogo)
 
 /* page elements */
 var ghgHistogramElement = d3.select('#ghg-emissions-histogram')
-var ghgWidth = 500 // parseInt(ghgHistogramElement.style('width'))
+var ghgWidth = 400 // parseInt(ghgHistogramElement.style('width'))
 var ghgHistogram = histogramChart()
   .width(ghgWidth)
   .height(200)
