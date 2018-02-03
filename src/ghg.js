@@ -3,13 +3,13 @@ import {arrayQuartiles, objArrayToSortedNumArray} from './js/helpers.js'
 import {Dashboard} from './js/dashboard.js'
 
 import './css/dashboard.css'
-import logo from './assets/sf_logo_white.png'
 import ghg from './assets/GHG-icon.svg'
-
-var sfLogo = new Image()
-sfLogo.src = logo
-sfLogo.alt = 'SF Dept of Environment'
-document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
+// import logo from './assets/sf_logo_white.png'
+//
+// var sfLogo = new Image()
+// sfLogo.src = logo
+// sfLogo.alt = 'SF Dept of Environment'
+// document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
 
 var ghgLogo = new Image()
 ghgLogo.src = ghg

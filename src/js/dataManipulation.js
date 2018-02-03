@@ -104,6 +104,33 @@ function apiDataToArray (data) {
  */
 function rankBuildings (id, bldgArray, prop = RANKINGMETRIC, prop2 = RANKINGMETRICTIEBREAK) {
   // TODO: allow specify sort ascending or descending
+
+  // polyfill for ie11 support https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+  if (!Array.prototype.findIndex) {
+    Object.defineProperty(Array.prototype, 'findIndex', {
+      value: function(predicate) {
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+        var o = Object(this);
+        var len = o.length >>> 0;
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+        var thisArg = arguments[1];
+        var k = 0;
+        while (k < len) {
+          var kValue = o[k];
+          if (predicate.call(thisArg, kValue, k, o)) {
+            return k;
+          }
+          k++;
+        }
+        return -1;
+      }
+    });
+  }
+
   let sorted = bldgArray.sort(function (a, b) {
     if (+a[prop] === +b[prop]) {
       return +a[prop2] - +b[prop2]
