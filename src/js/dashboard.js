@@ -219,7 +219,7 @@ Dashboard.populateInfoBoxes = function (singleBuildingData, categoryData, floorA
     var indicator
     if (status === 'Complied') {
       indicator = ' <i class="fa fa-check ok" aria-hidden="true"></i>'
-    } else if (status.includes('Exempt') || status === 'Municipal' || status === 'Pending') {
+    } else if (/*status.includes('Exempt') || */status === 'Municipal' || status === 'Pending') {
       indicator = ' <i class="fa fa-check alrt" aria-hidden="true"></i>'
     } else if (status === 'Upcoming') {
       indicator = ' <i class="fa fa-arrow-right upcoming" aria-hidden="true"></i>'
