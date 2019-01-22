@@ -3,7 +3,16 @@
 <%= require('html-loader!./partials/head.ejs') %>
 <body>
   <div class="container-fluid">
-    <%/* require('html-loader!./partials/nav.ejs') */%>
+    <div class="row">
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/existing-buildings-energy-performance-ordinance"></a>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!-- nav -->
     <%= require('html-loader!./partials/welcome.ejs') %>
     <div id="view-load" class="hidden" style="margin-top: 1em;">
       Loading...
@@ -29,7 +38,8 @@
 							</div>
 							<div class="col-xs-12 col-md-7">
 								<div class="ranking-text">
-									<span class="building-name">Hotel Zetta</span> has an EUI <span id="eui-relative-ranking">lower</span> than the national median for <span class="building-type-lower">hotel</span>.
+									The <span class="eui-year"></span> EUI for
+									<span class="building-name"></span> was <span id="eui-relative-ranking">lower</span> than the national median for <span class="building-type-lower">hotel</span>.
 								</div>
 							</div>
 							<div class="col-xs-2"></div>

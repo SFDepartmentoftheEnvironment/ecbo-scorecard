@@ -1,3 +1,5 @@
+import {Dashboard} from "./dashboard";
+
 const BLK = /(.+)\//
 const LOT = /[\/\.](.+)/
 const METRICS = ['benchmark', 'energy_star_score', 'site_eui_kbtu_ft2', 'source_eui_kbtu_ft2', 'percent_better_than_national_median_site_eui', 'percent_better_than_national_median_source_eui', 'total_ghg_emissions_metric_tons_co2e', 'total_ghg_emissions_intensity_kgco2e_ft2', 'weather_normalized_site_eui_kbtu_ft2', 'weather_normalized_source_eui_kbtu_ft2']
@@ -20,6 +22,7 @@ function parseSingleRecord (record) {
   METRICS.forEach(function (metric) {
     record = latest(metric, record)
   })
+  record = trendData(record);
   return record
 }
 
@@ -155,12 +158,74 @@ function rankBuildings (id, bldgArray, prop = RANKINGMETRIC, prop2 = RANKINGMETR
  */
 function cleanData (inputData) {
   var filtered = inputData.filter(function (el) {
-    var cond1 = (el.pct_change_one_year_site_eui_kbtu_ft2 <= 100) && (el.pct_change_one_year_site_eui_kbtu_ft2 >= -80)
-    var cond2 = (el.pct_change_two_year_site_eui_kbtu_ft2 <= 100) && (el.pct_change_two_year_site_eui_kbtu_ft2 >= -80)
+    var cond1 = true;
+    var cond2 = true;
+    var currentBenchMark = true;
+
+    if (!isNaN(el.pct_change_one_year_site_eui_kbtu_ft2)) {
+      // Only perform math on numbers
+      cond1 = (el.pct_change_one_year_site_eui_kbtu_ft2 <= 100) && (el.pct_change_one_year_site_eui_kbtu_ft2 >= -80);
+    }
+    if (!isNaN(el.pct_change_two_year_site_eui_kbtu_ft2)) {
+      cond2 = (el.pct_change_two_year_site_eui_kbtu_ft2 <= 100) && (el.pct_change_two_year_site_eui_kbtu_ft2 >= -80);
+    }
     var cond3 = el[RANKINGMETRIC] !== undefined
-    return (cond1 && cond2 & cond3)
+
+    if (el.latest_benchmark !== 'Complied') {
+      currentBenchMark = false;
+    }
+    return (cond1 && cond2 && cond3 && currentBenchMark)
   })
   return filtered
+}
+
+/** @function trendData
+ * generate weather normalized year array and percentage changes
+ * @param {object} entry - the parcel record object
+ * @returns {object} - the entry param with trend data populated
+ */
+function trendData(entry) {
+  var years = [];
+  var index = '';
+  var value = false;
+  let latestYear = entry['latest_weather_normalized_site_eui_kbtu_ft2_year'];
+  years.push({year: latestYear, value: entry['latest_weather_normalized_site_eui_kbtu_ft2'], pctChange: false});
+  latestYear--;
+  while (latestYear >= 2013) {
+    index = '_' + latestYear + '_weather_normalized_site_eui_kbtu_ft2';
+    value = entry[index];
+    if (isNumeric(value)) {
+      years.push({year: latestYear, value: parseFloat(value), pctChange: ''});
+    }
+    latestYear--;
+  }
+  for (var index in years) {
+    if (isNumeric(years[index].value)) {
+      var next = +index + 1;
+      if ((typeof years[+index+1] !== 'undefined') && isNumeric(years[+index+1].value)) {
+        years[index].pctChange = roundToTenth(calcPctChangeSimple(years[index].value, years[+index+1].value));
+      }
+    }
+  }
+  entry['weather_normalized_trends'] = years;
+  let latest = +entry['latest_weather_normalized_site_eui_kbtu_ft2'];
+  let last = years[years.length - 1];
+  entry['last_weather_normalized_site_eui_kbtu_ft2_year'] = last.year;
+  entry['weather_normalized_pct_change_total'] = roundToTenth(calcPctChangeSimple(latest, last.value));
+
+  return entry
+}
+
+function calcPctChangeSimple (val1, val2) {
+  let pctChange = (val1 - val2) / val2;
+  return pctChange * 100
+}
+
+/*
+isNumeric function in Javascript
+*/
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n) && (n !== 'undefined');
 }
 
 export {parseSingleRecord, apiDataToArray, rankBuildings, cleanData}

@@ -1,14 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 html, body {
 	height: 100vh;
 }
 body {
-	font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	font-family: "Open Sans", sans-serif;
 	line-height: 24px;
-	/*padding-top: 60px;*/
+	padding-top: 60px;
 	padding-right: 0;
 	padding-left: 0;
+	font-size: 16px;
 }
 
+.estar-ranking-text, .estar-non-local-ranking {
+	font-size: 16px;
+	padding-top: 1em;
+}
+
+.estar-non-local-ranking {
+	padding-bottom: 1em;
+}
 .navbar-brand {
 	padding-top: 2px;
 	padding-left: 10px;
@@ -16,7 +27,7 @@ body {
 .navbar-brand>img {
 	width: 11em;
 	margin-left: 25px;
-	margin-top: 5px;
+	padding-top: 3px;
 }
 .nav-pills>li>a {
 	color: #B4B8BB;
@@ -73,8 +84,7 @@ body {
 
 
 .fa.fa-building {
-	padding-right: 3%;
-	font-size: 25px;
+	font-size: 24px;
 	color: #C6CED3;
 }
 .attn {
@@ -90,7 +100,7 @@ body {
 	color: #F78C66;
 }
 .fa-check, .fa-times {
-	font-size: 1.5em;
+	font-size: 16px;
 }
 
 
@@ -103,6 +113,10 @@ body {
 #energy-use img {
 	padding-bottom: 4%;
 	padding-top: 4%;
+}
+
+#ghg-icon {
+	padding-top: 10px;
 }
 #ghg img {
 	padding-bottom: 4%;
@@ -123,6 +137,8 @@ body {
 	color: #0B0B0B;
 	letter-spacing: 1px;
 	text-align: center;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 .panel-body.side {
 	/* height: 850px; */
@@ -146,22 +162,45 @@ body {
 }
 .chart-title {
 	padding: 6%;
-	font-size: 16px;
+	font-size: 24px;
 	color: #3D3D3D;
 	letter-spacing: 1.2px;
+}
+
+.trend-title, .estar-title {
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
+
+.trend-title .building-name {
+	text-transform: uppercase;
+}
+
+#trend-histogram text.label {
+	text-anchor: middle;
+	font-size: 100%;
+	font-weight: 400;
+
+}
+
+#trend-histogram .ylabel {
+	font-size: 16px;
+}
+
+.col-sm-6 {
+	width: min-content;
 }
 .ranking-text {
 	padding: 3%;
 	margin-top: 2%;
-	font-size: 18px;
 	color: #3D3D3D;
 }
-.ranking-num {
+.ranking-num, .trend-lg {
 	font-size: 34px;
 	color: #0B0B0B;
 }
 .ranking-units {
-	font-size: 16px;
+	font-size: 24px;
 	color: #0B0B0B;
 }
 
@@ -192,6 +231,8 @@ body {
 	font-size: 16px;
 	color: #535557;
 	line-height: 20px;
+	text-align: left;
+	padding-left: 6%;
 }
 .side-panel-text {
 	font-size: 16px;
@@ -206,16 +247,37 @@ body {
 
 .building-units {
 	font-size: 16px;
-	text-align: right;
-	color: #535557;
-}
-.building-data {
-	font-size: 16px;
-	padding-right: 8%;
-	padding-left: 8%;
 	text-align: left;
 	color: #535557;
 }
+.building-units .row {
+	margin-right: 0px;
+}
+
+.sidebar-label-parcel {
+	padding-left: 6%
+}
+
+.sidebar-label-type {
+	padding-left: 6%
+}
+
+.sidebar-label-floor {
+	padding-left: 6%
+}
+
+.building-data {
+	font-size: 16px;
+	padding-right: 6%;
+	padding-left: 6%;
+	text-align: left;
+	color: #535557;
+}
+
+.building-data .row {
+	padding-left: 15px;
+}
+
 #local-ranking-tooltip {
 	color: #6ED9BE;
 }
@@ -230,7 +292,7 @@ h4 {
 .profile-header {
 	color: #1D8064;
 	padding-bottom: 5%;
-	font-size: 14px;
+	font-size: 16px;
 }
 .nav {
 	padding-left: 1px;
@@ -248,7 +310,7 @@ h4 {
 }
 
 .panel-bottom-header {
-	font-size: 18px;
+	font-size: 24px;
 	color: #3D3D3D;
 	font-weight: 500;
 	line-height: 25px;
@@ -279,13 +341,12 @@ h4 {
 	border-left: 1px solid lightgray;
 }
 .border-bottom {
-	border-bottom: 2px dotted lightgray;
+	/*border-bottom: 2px dotted lightgray;*/
 	padding-bottom: 2%;
 }
 .ranking {
 	width: 164px;
 	height: 15px;
-	font-size: 12px;
 	text-align: center;
 	line-height: 18px;
 	color: #6ED9BE;
@@ -300,7 +361,7 @@ h4 {
 }
 .local-ranking-lg {
 	color: #3D3D3D;
-	font-size: 40px;
+	font-size: 34px;
 	letter-spacing: -3px;
 }
 .estar-lg {
@@ -311,7 +372,15 @@ h4 {
 .local-ranking-container {
 	padding-top: 1em;
 	padding-bottom: 1em;
+	padding-left: 20px;
+	font-size: 16px;
+	text-align: left;
 }
+
+.local-ranking-container.local-ranking-score {
+	padding-left: 40px;
+}
+
 .tooltip-inner {
 	width: 300px;
 }
@@ -330,7 +399,6 @@ h4 {
 
 .axis text {
     font-family: sans-serif;
-    font-size: 12px;
 }
 
 .rLegend circle {
@@ -345,14 +413,10 @@ h4 {
 }
 
 .axislabel {
-	font-size: 12px;
 	fill: #777;
 }
 
-.estar-ranking-text {
-	padding-top: 1em;
+.legend {
+	margin-top: -5px;
 }
 
-.legend {
-	font-size: 10px;
-}

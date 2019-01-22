@@ -1,8 +1,8 @@
 'use strict'
 function legend (chartType, title, colorSwatches, showShade) {
   var margin = {top: 20, right: 5, bottom: 5, left: 5}
-  var width = 160
-  var height = 200
+  var width = 250
+  var height = 250
 
   var element = d3.select('#legend')
   var svg = element.append('svg')
@@ -14,7 +14,7 @@ function legend (chartType, title, colorSwatches, showShade) {
   var g = svg.select('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
-  g.append('text').text(title).attr('font-size', '1.5em')
+  g.append('text').text(title);
 
   var legendTitles = [
     'Bottom 25%',
@@ -38,7 +38,10 @@ function legend (chartType, title, colorSwatches, showShade) {
       .attr('x', tileSize + padding)
       .attr('y', function (d, i) { return i * (tileSize + padding) + tileSize / 2 })
 
-  var hlLineTile = g.append('g').attr('transform', `translate(${padding}, ${legendTitles.length * (tileSize + padding) + tileSize / 2})`)
+  var hlLineTile = g.append('g').attr('transform',
+      `translate(${padding},
+      ${legendTitles.length * (tileSize + padding) + tileSize / 2})`
+    )
   var lineFunction = d3.svg.line()
         .x(function (d) { return d.x })
         .y(function (d) { return d.y })
@@ -62,7 +65,10 @@ function legend (chartType, title, colorSwatches, showShade) {
       .attr('y', tileSize)
 
   if (showShade) {
-    var shadeTile = g.append('g').attr('transform', `translate(${padding}, ${(legendTitles.length + 2) * (tileSize + padding) + tileSize / 2})`)
+    var shadeTile = g.append('g').attr('transform',
+        `translate(${padding},
+        ${(legendTitles.length + 2) * (tileSize + padding) + tileSize / 2})`
+      )
     shadeTile.append('rect')
         .attr('width', tileSize)
         .attr('height', tileSize * 2)
@@ -73,10 +79,15 @@ function legend (chartType, title, colorSwatches, showShade) {
         .attr('x', tileSize + padding)
         .attr('y', tileSize - 4)
     shadeTile.append('text')
-        .text('ENERGY STAR Certification')
+        .text('ENERGY STAR')
         .attr('alignment-baseline', 'hanging')
         .attr('x', tileSize + padding)
-        .attr('y', tileSize + 4)
+        .attr('y', tileSize + 2)
+    shadeTile.append('text')
+        .text('Certification')
+        .attr('alignment-baseline', 'hanging')
+        .attr('x', tileSize + padding)
+        .attr('y', tileSize + 21)
   }
 }
 

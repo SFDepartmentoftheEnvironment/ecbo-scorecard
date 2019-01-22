@@ -71,12 +71,34 @@ Dashboard.groups = {
     ]
   }
 }
+
+Dashboard.nonGroup = {
+  'Other': {
+    plural: 'Others',
+    names: [
+      '<25k',
+      '25-50k',
+      '>50k',
+    ],
+    floorArea: [
+      25000,
+      50000,
+    ],
+  },
+}
+
 for (let category in Dashboard.groups) {
   /* d3.scale to get "similar" sized buildings */
   Dashboard.groups[category].scale = d3.scale.threshold()
         .domain(Dashboard.groups[category].floorArea)
         .range(Dashboard.groups[category].names)
 }
+
+/* d3.scale to get "similar" sized buildings */
+Dashboard.nonGroup['Other'].scale = d3.scale.threshold()
+    .domain(Dashboard.nonGroup['Other'].floorArea)
+    .range(Dashboard.nonGroup['Other'].names)
+
 
 /* example queries */
 // console.log( apiCalls.formQueryString(testquery) )
@@ -110,18 +132,24 @@ function handleSingleBuildingResponse (rows) {
     return $('#view-load').html('The record for the chosen building was not found')
   }
   Dashboard.singleBuildingData = dataManipulation.parseSingleRecord(rows[0]) // save data in global var
-
   let type = Dashboard.singleBuildingData.property_type_self_selected
 
   /* check to see if the returned building is one of our supported building types */
   if (Object.keys(Dashboard.groups).indexOf(type) === -1) {
-    console.error('not a supported building type')
-    $('#view-load').html('SF Environment’s ECBO postcards support buildings that are more than 80% office, hotel, or retail. For information on how your building’s performance compares to national medians, check out <a href="http://www.portfoliomanager.energystar.gov">www.portfoliomanager.energystar.gov</a>.')
-  } else {
-    let minMax = Dashboard.groups[type].scale.invertExtent(Dashboard.groups[type].scale(+Dashboard.singleBuildingData.floor_area))
-    Dashboard.floorAreaRange = minMax
-    apiCalls.propertyQuery(Dashboard.consumer, null, null, apiCalls.formQueryString({where: apiCalls.whereArray(type, minMax)}), Dashboard.handlePropertyTypeResponse)
+    let minMax = Dashboard.nonGroup['Other'].scale.invertExtent(Dashboard.nonGroup['Other'].scale(+Dashboard.singleBuildingData.floor_area));
+    Dashboard.floorAreaRange = minMax;
+    // console.error('not a supported building type')
+    // $('#view-load').html('SF Environment’s EBO postcards support buildings that are more than 80% office, hotel, or retail.
+    // For information on how your building’s performance compares to national medians, check out
+    // <a href="http://www.portfoliomanager.energystar.gov">www.portfoliomanager.energystar.gov</a>.')
   }
+  else {
+    let minMax = Dashboard.groups[type].scale.invertExtent(Dashboard.groups[type].scale(+Dashboard.singleBuildingData.floor_area));
+    Dashboard.floorAreaRange = minMax;
+
+  }
+  apiCalls.propertyQuery(Dashboard.consumer, null, null, apiCalls.formQueryString({
+    where: apiCalls.whereArray(type, Dashboard.floorAreaRange)}), Dashboard.handlePropertyTypeResponse)
 }
 
 /** @function cleanAndFilter
@@ -143,12 +171,48 @@ Dashboard.cleanAndFilter = function (rows) {
  * @return null
  */
 Dashboard.populateInfoBoxes = function (singleBuildingData, categoryData, floorAreaRange) {
-  let displayType = Dashboard.groups[singleBuildingData.property_type_self_selected].plural
-  let complianceMessage = {
-    'Violation - Did Not Report': `${singleBuildingData.building_name} cannot receive a ranking comparing it to similar-sized ${displayType} in San Francisco, because an annual energy benchmark for ${singleBuildingData.latest_benchmark_year} has not been submitted.`,
-    'Exempt': `${singleBuildingData.building_name} cannot receive a ranking comparing it to similar-sized ${displayType} in San Francisco, because an annual energy benchmark for ${singleBuildingData.latest_benchmark_year} was exempted.`,
-    'Violation - Insufficient Data': `${singleBuildingData.building_name} cannot receive a ranking comparing it to similar-sized ${displayType} in San Francisco, because an annual energy benchmark for ${singleBuildingData.latest_benchmark_year} was rejected due to data quality issues. Please contact the ECB Helpdesk for more information.`
+  if (Object.keys(Dashboard.groups).indexOf(singleBuildingData.property_type_self_selected) === -1) {
+    singleBuildingData.display = singleBuildingData.property_type_self_selected;
   }
+  else {
+    singleBuildingData.display = Dashboard.groups[singleBuildingData.property_type_self_selected].plural;
+  }
+
+  singleBuildingData.compliance_year = singleBuildingData.latest_benchmark_year;
+
+  // Check eui change
+  if (!isNaN(singleBuildingData.pct_change_one_year_site_eui_kbtu_ft2)) {
+    // Only perform math on numbers
+    if (!((singleBuildingData.pct_change_one_year_site_eui_kbtu_ft2 <= 100)
+        && (singleBuildingData.pct_change_one_year_site_eui_kbtu_ft2 >= -80))) {
+      singleBuildingData.latest_benchmark = 'Data Not Verified';
+    }
+  }
+
+  if (!isNaN(singleBuildingData.pct_change_two_year_site_eui_kbtu_ft2)) {
+    // Only perform math on numbers
+    if (!((singleBuildingData.pct_change_two_year_site_eui_kbtu_ft2 <= 100)
+        && (singleBuildingData.pct_change_two_year_site_eui_kbtu_ft2 >= -80))) {
+      singleBuildingData.latest_benchmark = 'Data Not Verified';
+
+    }
+  }
+
+  var complianceMessage = {
+    'Violation - Did Not Report': `${singleBuildingData.building_name} cannot receive a ranking comparing it to
+      similar-sized ${singleBuildingData.display} in San Francisco, because an annual energy benchmark for
+      ${singleBuildingData.latest_benchmark_year} has not been submitted.`,
+    'Exempt': `${singleBuildingData.building_name} cannot receive a ranking comparing it to similar-sized
+      ${singleBuildingData.display} in San Francisco, because an annual energy benchmark for
+      ${singleBuildingData.latest_benchmark_year} was exempted.`,
+    'Violation - Insufficient Data': `${singleBuildingData.building_name} cannot receive a ranking comparing it to
+      similar-sized ${singleBuildingData.display} in San Francisco, because an annual energy benchmark for
+      ${singleBuildingData.latest_benchmark_year} was rejected due to data quality issues. Please contact the ECB
+      Helpdesk for more information.`,
+    'Data Not Verified': `${singleBuildingData.building_name} cannot receive a ranking comparing it to
+      similar-sized ${singleBuildingData.display} in San Francisco, because the energy use reported in the
+      ${singleBuildingData.latest_benchmark_year} benchmark is not within range of previous years.`
+  };
 
   d3.select('#building-apn').text(singleBuildingData.parcel_s)
   if (Dashboard.displayPage === 'estar') {
@@ -157,14 +221,18 @@ Dashboard.populateInfoBoxes = function (singleBuildingData, categoryData, floorA
     if (!singleBuildingData.latest_energy_star_score) {
       d3.select('#estar-text').html(`The national median energy star score for <span class="building-type-lower">BUILDING TYPE</span> is 50.`)
     }
-    let re = /violation|exempt/i
-    if (!re.test(Dashboard.singleBuildingData.latest_benchmark)) {
+    let re = /violation|exempt|verified/i
+    var message = false;
+    if (re.test(Dashboard.singleBuildingData.latest_benchmark)) {
+      message = complianceMessage[singleBuildingData.latest_benchmark];
+    }
+    if (!message) {
       d3.selectAll('.building-ranking-text').text(singleBuildingData.localRank[0])
       d3.selectAll('.total-building-type').text(singleBuildingData.localRank[1])
     } else {
       // the building is not rankable: did not report an estar score OR the % change in eui either increased by more than 100 or decreased by more than 80 over the previous 2 years
       d3.select('.local-ranking-container').classed('hidden', true)
-      d3.selectAll('.estar-ranking-text').html(complianceMessage[singleBuildingData.latest_benchmark])
+      d3.selectAll('.estar-ranking-text').html(message);
     }
   } else if (Dashboard.displayPage === 'ghg') {
     d3.selectAll('.building-ghg-emissions').text(singleBuildingData.latest_total_ghg_emissions_metric_tons_co2e)
@@ -172,12 +240,27 @@ Dashboard.populateInfoBoxes = function (singleBuildingData, categoryData, floorA
   } else if (Dashboard.displayPage === 'eui') {
     d3.select('#building-eui').text(singleBuildingData.latest_site_eui_kbtu_ft2)
   }
+  else if (Dashboard.displayPage === 'trend') {
+    d3.select('.pct-label').remove();
+    let pct = singleBuildingData.weather_normalized_pct_change_total;
+    if (pct <= 0) {
+      d3.selectAll('.trend-value').text(pct * -1);
+      d3.selectAll('#trend-change').text('decreased').style("color", "green");
+    }
+    else {
+      d3.selectAll('.trend-value').text(pct);
+      d3.selectAll('#trend-change').style("color", "red");
+    }
 
-  d3.selectAll('.building-type-lower').text(displayType)
-  d3.selectAll('.building-type-upper').text(displayType.toUpperCase())
+    d3.selectAll('#trend-latest-year').text(singleBuildingData.latest_weather_normalized_site_eui_kbtu_ft2_year);
+    d3.selectAll('#trend-first-year').text(singleBuildingData.last_weather_normalized_site_eui_kbtu_ft2_year);
+  }
 
+  d3.selectAll('.building-type-lower').text(singleBuildingData.display)
+  d3.selectAll('.building-type-upper').text(singleBuildingData.display.toUpperCase())
   d3.select('#building-floor-area').text(helpers.numberWithCommas(singleBuildingData.floor_area))
   d3.selectAll('.building-name').text(singleBuildingData.building_name)
+  d3.selectAll('.eui-year').text(singleBuildingData.latest_source_eui_kbtu_ft2_year);
   d3.select('#building-street-address').text(singleBuildingData.building_address)
   d3.select('#building-city-address').text(
     singleBuildingData.full_address_city + ' ' +
@@ -243,7 +326,7 @@ Dashboard.populateInfoBoxes = function (singleBuildingData, categoryData, floorA
  * @param {string} label - the label for the highlighting bar
  */
 Dashboard.addHighlightLine = function (selection, data, chart, label) {
-  label = (label !== undefined) ? `${label.toUpperCase()} - ${data}` : `${data}`
+  label = (label !== undefined) ? `${label.toUpperCase()}` : "Your Building";
   if (isNaN(data)) data = -100
   var x = chart.xScale(),
     y = chart.yScale(),
@@ -259,7 +342,7 @@ Dashboard.addHighlightLine = function (selection, data, chart, label) {
         .interpolate('linear')
 
   var hlline = [
-    {x: x(data), y: 0},
+    {x: x(data), y: 2},
     {x: x(data), y: height - margin.bottom - margin.top}
   ]
 
@@ -273,7 +356,15 @@ Dashboard.addHighlightLine = function (selection, data, chart, label) {
       .attr('stroke', Dashboard.colorSwatches.highlight)
       .attr('stroke-width', 3)
       .attr('stroke-dasharray', '5,3')
-      .attr('fill', 'none')
+      .attr('fill', 'none');
+  let labelX = x - 100;
+  hl.enter().append('text')
+      .attr('x', x)
+      .attr('y', 12  )
+      .attr('font-family', 'Open Sans')
+      .attr('text-anchor', textAnchor)
+      .attr('fill', 'black')
+      .text(label);
   hl.exit().remove()
 }
 

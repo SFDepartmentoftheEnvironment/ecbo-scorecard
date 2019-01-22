@@ -1,15 +1,18 @@
+import '@babel/polyfill';
 import histogramChart from './shared-js/histogram-chart.js'
 import {arrayQuartiles, objArrayToSortedNumArray} from './js/helpers.js'
 import {Dashboard} from './js/dashboard.js'
 
 import './css/dashboard.css'
 import ghg from './assets/GHG-icon.svg'
-// import logo from './assets/sf_logo_white.png'
-//
-// var sfLogo = new Image()
-// sfLogo.src = logo
-// sfLogo.alt = 'SF Dept of Environment'
-// document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
+import logo from './assets/sf_logo_white.png'
+
+var sfLogo = new Image()
+sfLogo.src = logo
+sfLogo.alt = 'SF Dept of Environment'
+sfLogo.style.height = '60px';
+sfLogo.style.width = '184px';
+document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
 
 var ghgLogo = new Image()
 ghgLogo.src = ghg
@@ -18,10 +21,10 @@ document.getElementById('ghg-icon').appendChild(ghgLogo)
 
 /* page elements */
 var ghgHistogramElement = d3.select('#ghg-emissions-histogram')
-var ghgWidth = 400 // parseInt(ghgHistogramElement.style('width'))
+var ghgWidth = 600 // parseInt(ghgHistogramElement.style('width'))
 var ghgHistogram = histogramChart()
   .width(ghgWidth)
-  .height(200)
+  .height(300)
   .range([0, 1650])
   .tickFormat(d3.format(',d'))
 

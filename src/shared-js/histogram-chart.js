@@ -27,9 +27,10 @@ function histogramChart () {
       x   .domain( d3.extent(data.map(function(d) { return d.x; })) )
           .range([0, width - margin.left - margin.right]);
 
+
       // Update the y-scale.
       y   .domain([0, d3.max(data, function(d) { return d.y; })])
-          .range([height - margin.top - margin.bottom, 0]);
+          .range([height - margin.top - margin.bottom, 2]);
 
       // Select the svg element, if it exists.
       var svg = d3.select(this).selectAll("svg").data([data]);
@@ -54,10 +55,9 @@ function histogramChart () {
           .attr("x", x(75))
           .attr("y", y.range()[1])
           .attr("width", x(102) - x(75))
-          .attr("height", y.range()[0])
+          .attr("height", y.range()[0] - 2)
           .attr('fill', shadeArea)
       }
-
       // Update the bars.
       var bar = svg.select(".bars").selectAll(".bar").data(data);
       bar.enter().append("rect").attr('class', 'bar');
@@ -87,7 +87,7 @@ function histogramChart () {
           .call(yAxis)
       svg.selectAll('.ylabel').remove()
       svg.append('text')
-          .attr("transform", "translate(" + (margin.left - 35) + "," + (margin.top) + ")rotate(-90)")
+          .attr("transform", "translate(" + (margin.left - 35) + "," + (margin.top + 2) + ")rotate(-90)")
           .attr('class', 'axis axislabel ylabel')
           .style("text-anchor", "end")
           .text(yAxisLabel)
