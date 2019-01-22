@@ -78,9 +78,22 @@ function quartilesChart() {
           .text(function(d,i){
             var val = d
             if (i === 2) val += '-Median EUI'
-            if (i === 4) val += ' (kbtu/ft2)'
+            // if (i === 4) val += ' (kbtu/ft2)'
             return val
           })
+
+      g.select(".x.axis")
+          .attr("transform", "translate(0," + y.range()[0] + ")")
+          .call(x)
+      svg.selectAll('.xlabel').remove()
+      svg.append('text')
+          .attr("transform", "translate(" + (width/2 ) + "," + (height + 20) + ")")
+          .attr('class', 'axis axislabel xlabel')
+          .style("text-anchor", "end")
+          .text("kbtu/ft2");
+      // Readjust height so xaxis label fits
+      svg.attr("height", height+20);
+
     });
   }
 

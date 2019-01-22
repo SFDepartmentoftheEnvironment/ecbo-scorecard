@@ -1,15 +1,18 @@
+import '@babel/polyfill';
 import quartilesChart from './shared-js/quartiles-chart.js'
 import {arrayQuartiles, objArrayToSortedNumArray} from './js/helpers.js'
 import {Dashboard} from './js/dashboard.js'
 
 import './css/dashboard.css'
 import eui from './assets/EUI.svg'
+import logo from './assets/sf_logo_white.png'
 
-// import logo from './assets/sf_logo_white.png'
-// var sfLogo = new Image()
-// sfLogo.src = logo
-// sfLogo.alt = 'SF Dept of Environment'
-// document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
+var sfLogo = new Image()
+sfLogo.src = logo
+sfLogo.alt = 'SF Dept of Environment'
+sfLogo.style.height = '60px';
+sfLogo.style.width = '184px';
+document.getElementsByClassName('navbar-brand')[0].appendChild(sfLogo)
 
 var euiLogo = new Image()
 euiLogo.src = eui
@@ -33,14 +36,15 @@ Dashboard.handlePropertyTypeResponse = function (rows) {
 
   Dashboard.color.site_eui_kbtu_ft2.domain(arrayQuartiles(euiVals))
   /* draw stacked bar for energy use intensity */
-  var euiWidth = 400
+  var euiWidth = 600
   var euiChart = quartilesChart()
     .width(euiWidth)
-    .height(150)
+    .height(200)
     .colorScale(Dashboard.color.site_eui_kbtu_ft2)
     .margin({top: 20, right: 80, bottom: 20, left: 50})
   euiChartElement.datum(euiVals).call(euiChart)
-  euiChartElement.call(Dashboard.addHighlightLine, Dashboard.singleBuildingData.latest_site_eui_kbtu_ft2, euiChart, Dashboard.singleBuildingData.building_name)
+  euiChartElement.call(Dashboard.addHighlightLine, Dashboard.singleBuildingData.latest_site_eui_kbtu_ft2, euiChart,
+      Dashboard.singleBuildingData.building_name)
 
   Dashboard.populateInfoBoxes(Dashboard.singleBuildingData, Dashboard.categoryData, Dashboard.floorAreaRange)
 

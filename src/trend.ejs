@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<%= require('html-loader!./partials/head.ejs') %>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/existing-buildings-energy-performance-ordinance"></a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- nav -->
+    <%= require('html-loader!./partials/welcome.ejs') %>
+    <div id="view-load" class="hidden" style="margin-top: 1em;">
+        Loading...
+    </div>
+    <div id="view-content" class="row hidden">
+        <%= require('html-loader!./partials/sidebar.ejs') %>
+        <div class="col-xs-12 col-md-9">
+            <div class="row">
+                <div id="tabs">
+                    <!-- <ul class="nav nav-pills">
+                      <li class="active">
+                        <a id="energy-star-tab" href="#energy-score" data-toggle="tab">LOCAL RANKING</a>
+                      </li>
+                    </ul> -->
+                    <div class="tab-content clearfix">
+                        <div class="tab-pane active" id="energy-score">
+                            <!-- <div class="row center border-bottom">
+                              <span class="building-name <sid></sid>e">Building Name</span>
+                            </div>
+                            <div class="row border-bottom"> -->
+                            <div class="col-xs-12 col-md-3">
+                                <div class="row center">
+                                    <div class="local-ranking-container">
+                                        <span>Energy usage</span><br>
+                                        <span id="trend-change">increased</span><br>
+                                        <span class="trend-lg"><span class="trend-value"></span>%</span><br>
+                                        from <span id="trend-first-year">2013</span> to <span id="trend-latest-year">2018</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-7">
+                                <div class="estar-ranking-text">
+                                    Based on the weather normalized energy use intensity reported through the annual
+                                    benchmarks, <span class="building-name">BUILDING NAME</span> has
+                                    <span id="trend-change">increased</span> energy use from
+                                    <span id="trend-first-year">2013</span> to <span id="trend-latest-year">2018</span>.
+                                </div>
+                            </div>
+                            <div class="col-xs-2">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <div class="row center hidden-xs">
+                            <div class="col-xs-2"></div>
+                            <div class="col-xs-12">
+                                <div class="chart-title trend-title">
+                                    ENERGY USE FOR <span class="building-name">BUILDING NAME</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row center">
+                            <div class="col-xs-12 hidden-xs">
+                                <!-- <div class="loading">Loading&mdash;</div> -->
+                                <div id="trend-histogram" class="histogram-chart"></div>
+                                <div id="demo" class="hidden">
+                                    <input type="number" id="change-estar-input" value="100"><button id="change-estar">change bin numbers</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 hidden-xs">
+                                <div id="legend" class="legend"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 panel-bottom">
+                                <div class="panel-bottom-header">WEATHER NORMALIZED ENERGY USE INTENSITY</div>
+                                <br>
+                                <div class="panel-bottom-text">
+                                    -- annual energy consumption divided by gross floor area, adjusted for weather.
+                                    Weather Normalized energy is the energy your property would have used if the
+                                    temperature in each year matched a 30 year average. The weather in a given year may
+                                    be much hotter or colder than your building’s normal climate; weather normalized
+                                    energy accounts for this difference. However, weather normalization energy adjusts
+                                    only for annual weather, not longer term changes in climate.
+                                    <br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<!-- /container -->
+
+<script>
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+</body>
+
+</html>

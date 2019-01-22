@@ -6,7 +6,8 @@ module.exports = {
   entry: {
     estar: './src/estar.js',
     eui: './src/eui.js',
-    ghg: './src/ghg.js'
+    ghg: './src/ghg.js',
+    trend: './src/trend.js'
   },
   output: {
     filename: '[name].bundle.js',
@@ -30,10 +31,16 @@ module.exports = {
       chunks: ['ghg']
     }),
     new HtmlWebpackPlugin({
+      filename: 'trend.html',
+      template: 'src/trend.ejs',
+      chunks: ['trend']
+    }),
+    new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'src/index.ejs',
       chunks: ['index']
     })
+
   ],
   module: {
     rules: [
@@ -42,9 +49,6 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
-          options: {
-           presets: ['babel-preset-es2015']
-          }
         }
       },{
         test: /\.css$/,

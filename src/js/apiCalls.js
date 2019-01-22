@@ -14,10 +14,10 @@ function whereArray (propertyType, range) {
   if (range[0] === undefined) { range[0] = 10000 }
   let res = [
     "property_type_self_selected='" + propertyType + "'",
-    'floor_area > ' + range[0]
+    'floor_area >= ' + range[0]
   ]
   if (range[1]) {
-    res.push('floor_area < ' + range[1])
+    res.push('floor_area <= ' + range[1])
   }
   return res
 }
